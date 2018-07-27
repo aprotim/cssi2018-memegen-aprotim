@@ -23,7 +23,7 @@ def seed_data():
     tears_key = Template(name="tears_in_the_rain", image_file="tears.png").put()
 
 
-    Meme(top_text="Not sure if meme app", bottom_text="or endurance test",
+    Meme(top_text="Not sure if meme app", bottom_text="or black hole",
          template=fry_key, creator="aprotim@gmail.com",
          created_at=datetime.datetime(2018, 07, 23, 05, 23, 0, 0)).put()
     Meme(top_text="Meme app", bottom_text="doesn't save memes?",

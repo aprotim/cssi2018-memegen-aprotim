@@ -75,6 +75,23 @@ class AddMemeHandler(webapp2.RequestHandler):
              created_at=datetime.datetime.utcnow()).put()
         self.redirect('/')
 
+class UpdateMemeHandler(webapp2.RequestHandler):
+    def get(self):
+        self.response.content_type = 'text/json'
+        since = float(self.request.get('since'))
+        since_dt = datetime.datetime.fromtimestamp(since)
+        new_memes = Meme.query(Meme.created_at >= since_dt).order(-Meme.created_at).fetch()
+        new_memes_list = []
+        for meme in new_memes:
+            template = meme.template.get()
+            new_memes_list.append({
+              'image_file': template.image_file,
+              'top_text': meme.top_text,
+              'bottom_text': meme.bottom_text,
+            })
+        self.response.write(json.dumps(new_memes_list))
+
+
 
 class LoadDataHandler(webapp2.RequestHandler):
     def get(self):
@@ -84,4 +101,5 @@ app = webapp2.WSGIApplication([
     ('/', MemeBrowser),
     ('/seed-data', LoadDataHandler),
     ('/add_meme', AddMemeHandler),
+    ('/updated_memes', UpdateMemeHandler)
 ], debug=True)

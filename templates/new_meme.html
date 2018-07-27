@@ -1,0 +1,17 @@
+<html>
+  <head>
+    <title>New Meme</title>
+   <link rel="stylesheet" type="text/css" href="/style/fortune-style.css">
+  </head>
+  <body>
+    <form action="/add_meme" method="POST">
+    <h2>Template:</h2>
+    {% for template in templates %}
+    <input type="radio" name="template" value="{{template.name}}" /><img src="meme_templates/{{template.image_file}}" /><br />
+    {% endfor %}
+    <h2>Top text:</h2> <input type="text" name="top_text" />
+    <h2>Bottom text:</h2> <input type="text" name="bottom_text" />
+    <input type="submit" />
+  </form>
+  </body>
+</html>

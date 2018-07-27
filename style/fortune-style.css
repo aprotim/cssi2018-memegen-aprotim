@@ -1,3 +1,12 @@
+input[type="radio"]:checked+label {
+  background-color: cornflowerblue;
+}
+
+label {
+    display: block;
+    padding: 5px;
+}
+
 .meme-div{
 width: 450px;
 text-align: center;

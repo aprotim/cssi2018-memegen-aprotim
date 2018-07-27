@@ -7,7 +7,7 @@
     <form action="/add_meme" method="POST">
     <h2>Template:</h2>
     {% for template in templates %}
-    <input type="radio" name="template" value="{{template.name}}" /><img src="meme_templates/{{template.image_file}}" /><br />
+    <input type="radio" name="template" value="{{template.name}}" id="{{template.name}}"/><label for=""{{template.name}}"><img src="meme_templates/{{template.image_file}}" /></label><br />
     {% endfor %}
     <h2>Top text:</h2> <input type="text" name="top_text" />
     <h2>Bottom text:</h2> <input type="text" name="bottom_text" />

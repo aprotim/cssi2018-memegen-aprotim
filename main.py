@@ -52,17 +52,23 @@ jinja_current_directory = jinja2.Environment(
 
 class MemeBrowser(webapp2.RequestHandler):
     def get(self):
+        logout_link = users.create_logout_url('/')
         memes = Meme.query().order(-Meme.created_at).fetch(10)
         for meme in memes:
             meme.template_filename = meme.template.get().image_file
         start_template=jinja_current_directory.get_template("templates/latestmemes.html")
-        self.response.write(start_template.render({'memes': memes}))
+        self.response.write(start_template.render({'memes': memes, 'logout_link': logout_link}))
 
 class AddMemeHandler(webapp2.RequestHandler):
     def get(self):
-        templates = Template.query().fetch()
-        add_template=jinja_current_directory.get_template("templates/new_meme.html")
-        self.response.write(add_template.render({'templates': templates}))
+        logged_in_user = users.get_current_user()
+        if logged_in_user:
+            templates = Template.query().fetch()
+            add_template=jinja_current_directory.get_template("templates/new_meme.html")
+            self.response.write(add_template.render({'templates': templates}))
+        else:
+            login_prompt_template = jinja_current_directory.get_template('templates/login_please.html')
+            self.response.write(login_prompt_template.render({'login_link': users.create_login_url('/')}))
 
     def post(self):
         user = users.get_current_user()
@@ -71,7 +77,7 @@ class AddMemeHandler(webapp2.RequestHandler):
         Meme(top_text=self.request.get('top_text'),
              bottom_text=self.request.get('bottom_text'),
              template=template_key,
-             creator=user.email(),
+             creator=user.user_id(),
              created_at=datetime.datetime.utcnow()).put()
         self.redirect('/')
 

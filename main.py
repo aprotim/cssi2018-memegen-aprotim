@@ -29,7 +29,7 @@ class MemeBrowser(webapp2.RequestHandler):
         else:
             latest_meme_key = ""
         for meme in memes:
-            meme.template_filename = meme.template.get().image_file
+            meme.image_filename = meme.image.get().image_file
         start_template=jinja_current_directory.get_template("templates/latestmemes.html")
         self.response.write(start_template.render({'memes': memes,
                 'latest_meme': latest_meme_key}))
@@ -37,18 +37,18 @@ class MemeBrowser(webapp2.RequestHandler):
 # Handles new meme creation
 class AddMemeHandler(webapp2.RequestHandler):
     def get(self):
-        templates = Image.query().fetch()
+        images = Image.query().fetch()
         add_template=jinja_current_directory.get_template("templates/new_meme.html")
-        self.response.write(add_template.render({'templates': templates}))
+        self.response.write(add_template.render({'images': images}))
 
     def post(self):
         user = users.get_current_user()
-        template_name = self.request.get('template')
-        template_key = Image.query(Image.name == template_name).fetch(1)[0].key
+        image_name = self.request.get('image')
+        image_key = Image.query(Image.name == image_name).fetch(1)[0].key
         Meme(top_text=self.request.get('top_text'),
              middle_text=self.request.get('middle_text'),
              bottom_text=self.request.get('bottom_text'),
-             template=template_key,
+             image=image_key,
              creator=user.user_id()).put()
         self.redirect('/')
 
@@ -64,9 +64,9 @@ class UpdateMemeHandler(webapp2.RequestHandler):
             new_memes = Meme.query().order(-Meme.created_at).fetch(10)
         new_memes_list = []
         for meme in new_memes:
-            template = meme.template.get()
+            image = meme.image.get()
             new_memes_list.append({
-              'image_file': template.image_file,
+              'image_file': image.image_file,
               'top_text': meme.top_text,
               'bottom_text': meme.bottom_text,
               'created_at': meme.created_at.isoformat(),

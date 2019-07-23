@@ -6,7 +6,7 @@ let update_preview = () => {
   top_line.innerHTML = document.querySelector("#top_text_input").value;
   middle_line.innerHTML = document.querySelector("#middle_text_input").value;
   bottom_line.innerHTML = document.querySelector("#bottom_text_input").value;
-  image.src = document.querySelector('input[name="template"]:checked+label img').src
+  image.src = document.querySelector('input[name="image"]:checked+label img').src
 };
 
 document.querySelectorAll("#new_meme_form input").forEach(

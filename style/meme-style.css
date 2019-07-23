@@ -43,7 +43,11 @@ max-width: 100%;
 .line1 {
    top: 0;
  }
-.line2 {
+ .line2 {
+   top: 50%;
+   transform: translateY(-50%);
+ }
+.line3 {
    bottom: 0;
 }
 

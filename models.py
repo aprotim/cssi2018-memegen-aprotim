@@ -7,7 +7,7 @@ class Image(ndb.Model):
 #One to One
 class Meme(ndb.Model):
     top_text = ndb.StringProperty(required=False)
-    middle_text = ndb.StringProperty()
+    middle_text = ndb.StringProperty(required=False)
     bottom_text = ndb.StringProperty(required=False)
     template = ndb.KeyProperty(Image)
     creator = ndb.StringProperty(required=True)

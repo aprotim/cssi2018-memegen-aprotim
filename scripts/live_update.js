@@ -13,7 +13,8 @@ function insert_meme(desc){
   let new_div = new_element('div', {'class': 'meme-div'}, [
     new_element('img', {'src': 'meme_images/' + desc['image_file']}),
     new_element('h2', {'class': 'line1'}, [document.createTextNode(desc['top_text'])]),
-    new_element('h2', {'class': 'line2'}, [document.createTextNode(desc['bottom_text'])]),
+    new_element('h2', {'class': 'line2'}, [document.createTextNode(desc['middle_text'])]),
+    new_element('h2', {'class': 'line3'}, [document.createTextNode(desc['bottom_text'])]),
   ]);
   let container = document.querySelector("#memes_container");
   container.insertBefore(new_div, container.children[0]);

@@ -21,6 +21,9 @@ def seed_data():
     fry_key = Image(name="fry_squint", image_file="fry.png").put()
     jc_key = Image(name="jackie_chan_wtf", image_file="jackie.png").put()
     tears_key = Image(name="tears_in_the_rain", image_file="tears.png").put()
+    pika_key = Image(name="surprised_pikachu", image_file="surprised_pikachu.png").put()
+    buzz_key = Image(name="buzz_everywhere", image_file="buzz_everywhere.jpg").put()
+    roll_safe_key = Image(name="roll_safe", image_file="roll_safe.jpg").put()
 
 
     Meme(top_text="Not sure if meme app", bottom_text="or black hole",

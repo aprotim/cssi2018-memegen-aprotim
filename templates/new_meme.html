@@ -15,7 +15,7 @@
       <div id="vertical_container">
         <div id="meme_text_inputs">
           <strong>Top text:</strong> <input type="text" name="top_text" id="top_text_input" /> <br />
-          <strong>Middle text:</strong> <input type="text" name="middle_text" id="middle_text" /> <br />
+          <strong>Middle text:</strong> <input type="text" name="middle_text" id="middle_text_input" /> <br />
           <strong>Bottom text:</strong> <input type="text" name="bottom_text" id="bottom_text_input"/><br />
           <input type="submit" />
         </div>
@@ -39,6 +39,7 @@
     let bottom_line = document.querySelector('#new_meme_preview .line3')
     let image = document.querySelector('#new_meme_preview img');
     top_line.innerHTML = document.querySelector("#top_text_input").value;
+    middle_line.innerHTML = document.querySelector("#middle_text_input").value;
     bottom_line.innerHTML = document.querySelector("#bottom_text_input").value;
     image.src = document.querySelector('input[name="template"]:checked+label img').src
   };

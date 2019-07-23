@@ -46,6 +46,7 @@ class AddMemeHandler(webapp2.RequestHandler):
         template_name = self.request.get('template')
         template_key = Image.query(Image.name == template_name).fetch(1)[0].key
         Meme(top_text=self.request.get('top_text'),
+             middle_text=self.request.get('middle_text'),
              bottom_text=self.request.get('bottom_text'),
              template=template_key,
              creator=user.user_id()).put()

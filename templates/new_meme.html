@@ -15,6 +15,7 @@
       <div id="vertical_container">
         <div id="meme_text_inputs">
           <strong>Top text:</strong> <input type="text" name="top_text" id="top_text_input" /> <br />
+          <strong>Middle text:</strong> <input type="text" name="middle_text" id="middle_text" /> <br />
           <strong>Bottom text:</strong> <input type="text" name="bottom_text" id="bottom_text_input"/><br />
           <input type="submit" />
         </div>
@@ -34,7 +35,8 @@
   <script>
   let update_preview = () => {
     let top_line = document.querySelector('#new_meme_preview .line1');
-    let bottom_line = document.querySelector('#new_meme_preview .line2')
+    let middle_line = document.querySelector('#new_meme_preview .line2');
+    let bottom_line = document.querySelector('#new_meme_preview .line3')
     let image = document.querySelector('#new_meme_preview img');
     top_line.innerHTML = document.querySelector("#top_text_input").value;
     bottom_line.innerHTML = document.querySelector("#bottom_text_input").value;

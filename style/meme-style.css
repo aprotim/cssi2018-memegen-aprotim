@@ -3,11 +3,10 @@ input[type="radio"]:checked+label {
 }
 
 #new_meme_form input[type="radio"] {
-  visibility: hidden;
-  display: inline-block;
+  display: none;
 }
 
-label {
+#new_meme_form label {
     display: inline-block;
     padding: 5px;
 }
@@ -66,10 +65,14 @@ max-width: 100%;
 #template_chooser {
   min-width: 100px;
   max-width: 33%;
+  height: 100%;
+  overflow-y: scroll;
 }
 
 #template_chooser img{
   max-width: 100%;
+  padding: 0;
+  margin: 0;
 }
 
 #meme_text_inputs {

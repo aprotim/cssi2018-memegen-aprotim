@@ -24,11 +24,11 @@ def seed_data():
 
 
     Meme(top_text="Not sure if meme app", bottom_text="or black hole",
-         template=fry_key, creator="aprotim@gmail.com",
+         image=fry_key, creator="aprotim@gmail.com",
          created_at=datetime.datetime(2018, 07, 23, 05, 23, 0, 0)).put()
     Meme(top_text="Meme app", bottom_text="doesn't save memes?",
-         template=jc_key, creator="aprotim@gmail.com",
+         image=jc_key, creator="aprotim@gmail.com",
          created_at=datetime.datetime(2018, 06, 23, 05, 23, 0, 0)).put()
     Meme(top_text="All these memes", bottom_text="lost like tears in the rain.",
-         template=tears_key, creator="aprotim@gmail.com",
+         image=tears_key, creator="aprotim@gmail.com",
          created_at=datetime.datetime(1984, 07, 23, 05, 23, 0, 0)).put()

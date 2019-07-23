@@ -68,6 +68,7 @@ class UpdateMemeHandler(webapp2.RequestHandler):
             new_memes_list.append({
               'image_file': image.image_file,
               'top_text': meme.top_text,
+              'middle_text': meme.middle_text,
               'bottom_text': meme.bottom_text,
               'created_at': meme.created_at.isoformat(),
               'key': meme.key.urlsafe(),

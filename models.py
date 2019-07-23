@@ -12,7 +12,3 @@ class Meme(ndb.Model):
     template = ndb.KeyProperty(Image)
     creator = ndb.StringProperty(required=True)
     created_at = ndb.DateTimeProperty(required=True, auto_now_add=True)
-
-class User(ndb.Model):
-    id = ndb.StringProperty(required=True)
-    display_name = ndb.StringProperty(required=True)

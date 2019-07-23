@@ -15,12 +15,12 @@
 # limitations under the License.
 
 import datetime
-from models import Meme, Template
+from models import Meme, Image
 
 def seed_data():
-    fry_key = Template(name="fry_squint", image_file="fry.png").put()
-    jc_key = Template(name="jackie_chan_wtf", image_file="jackie.png").put()
-    tears_key = Template(name="tears_in_the_rain", image_file="tears.png").put()
+    fry_key = Image(name="fry_squint", image_file="fry.png").put()
+    jc_key = Image(name="jackie_chan_wtf", image_file="jackie.png").put()
+    tears_key = Image(name="tears_in_the_rain", image_file="tears.png").put()
 
 
     Meme(top_text="Not sure if meme app", bottom_text="or black hole",

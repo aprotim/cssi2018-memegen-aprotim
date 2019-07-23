@@ -6,10 +6,10 @@
   <body>
     <form id="new_meme_form" action="/add_meme" method="POST">
     <div id="horizontal_container">
-      <div id="template_chooser">
+      <div id="image_chooser">
         <h2>Image:</h2>
-        {% for template in templates %}
-        <input type="radio" name="template" value="{{template.name}}" id="{{template.name}}"/><label for="{{template.name}}"><img src="meme_images/{{template.image_file}}" /></label><br />
+        {% for image in images %}
+        <input type="radio" name="image" value="{{image.name}}" id="{{image.name}}"/><label for="{{image.name}}"><img src="meme_images/{{image.image_file}}" /></label><br />
         {% endfor %}
       </div>
       <div id="vertical_container">

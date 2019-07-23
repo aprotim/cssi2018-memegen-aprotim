@@ -1,7 +1,5 @@
-let last_refresh = new Date();
-
 function new_element(tag_name, attributes, children=[]){
-  el = document.createElement(tag_name)
+  let el = document.createElement(tag_name)
   for (let attr in attributes){
     el.setAttribute(attr, attributes[attr]);
   }
@@ -13,7 +11,7 @@ function new_element(tag_name, attributes, children=[]){
 
 function insert_meme(desc){
   let new_div = new_element('div', {'class': 'meme-div'}, [
-    new_element('img', {'src': 'meme_templates/' + desc['image_file']}),
+    new_element('img', {'src': 'meme_images/' + desc['image_file']}),
     new_element('h2', {'class': 'line1'}, [document.createTextNode(desc['top_text'])]),
     new_element('h2', {'class': 'line2'}, [document.createTextNode(desc['bottom_text'])]),
   ]);
@@ -22,14 +20,17 @@ function insert_meme(desc){
 }
 
 function refresh_memes() {
-  fetch('/updated_memes?since=' + last_refresh.getTime()/1000, {'credentials': 'include'} )
+
+  fetch('/updated_memes?after=' + latest_meme_key , {'credentials': 'include'} )
     .then((data) => {return data.json()})
     .then((json) => {
+      if (json.length > 0){
+        latest_meme_key = json[0].key;
+      }
       for (let i in json) {
         insert_meme(json[i]);
       }
     })
-  last_refresh = new Date();
 }
 
 

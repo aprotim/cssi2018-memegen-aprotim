@@ -1,46 +1,15 @@
 #!/usr/bin/python
-#
-# Copyright 2018 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
 
-#!/usr/bin/env python
-#
-# Copyright 2007 Google Inc.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-import datetime
 import json
 import webapp2
 import os
 import jinja2
-import random
 
 import seed_memes
 
-from models import Meme, Template
+from models import Meme, Image
 from google.appengine.api import users
+from google.appengine.ext import ndb
 
 
 
@@ -50,37 +19,48 @@ jinja_current_directory = jinja2.Environment(
     extensions=['jinja2.ext.autoescape'],
     autoescape=True)
 
+
+# Displays all recent memes
 class MemeBrowser(webapp2.RequestHandler):
     def get(self):
         memes = Meme.query().order(-Meme.created_at).fetch(10)
+        if memes:
+            latest_meme_key = memes[0].key.urlsafe()
+        else:
+            latest_meme_key = ""
         for meme in memes:
             meme.template_filename = meme.template.get().image_file
         start_template=jinja_current_directory.get_template("templates/latestmemes.html")
-        self.response.write(start_template.render({'memes': memes}))
+        self.response.write(start_template.render({'memes': memes,
+                'latest_meme': latest_meme_key}))
 
+# Handles new meme creation
 class AddMemeHandler(webapp2.RequestHandler):
     def get(self):
-        templates = Template.query().fetch()
+        templates = Image.query().fetch()
         add_template=jinja_current_directory.get_template("templates/new_meme.html")
         self.response.write(add_template.render({'templates': templates}))
 
     def post(self):
         user = users.get_current_user()
         template_name = self.request.get('template')
-        template_key = Template.query(Template.name == template_name).fetch(1)[0].key
+        template_key = Image.query(Image.name == template_name).fetch(1)[0].key
         Meme(top_text=self.request.get('top_text'),
              bottom_text=self.request.get('bottom_text'),
              template=template_key,
-             creator=user.email(),
-             created_at=datetime.datetime.utcnow()).put()
+             creator=user.user_id()).put()
         self.redirect('/')
 
+# JSON endpoint for auto-refresh
 class UpdateMemeHandler(webapp2.RequestHandler):
     def get(self):
         self.response.content_type = 'text/json'
-        since = float(self.request.get('since'))
-        since_dt = datetime.datetime.fromtimestamp(since)
-        new_memes = Meme.query(Meme.created_at >= since_dt).order(-Meme.created_at).fetch()
+        if self.request.get('after'):
+            latest_meme_key = ndb.Key(urlsafe=self.request.get('after'))
+            latest_meme = latest_meme_key.get()
+            new_memes = Meme.query(Meme.created_at > latest_meme.created_at).order(-Meme.created_at).fetch()
+        else:
+            new_memes = Meme.query().order(-Meme.created_at).fetch(10)
         new_memes_list = []
         for meme in new_memes:
             template = meme.template.get()
@@ -88,11 +68,13 @@ class UpdateMemeHandler(webapp2.RequestHandler):
               'image_file': template.image_file,
               'top_text': meme.top_text,
               'bottom_text': meme.bottom_text,
+              'created_at': meme.created_at.isoformat(),
+              'key': meme.key.urlsafe(),
             })
         self.response.write(json.dumps(new_memes_list))
 
 
-
+# For adding data
 class LoadDataHandler(webapp2.RequestHandler):
     def get(self):
         seed_memes.seed_data()
@@ -102,4 +84,5 @@ app = webapp2.WSGIApplication([
     ('/seed-data', LoadDataHandler),
     ('/add_meme', AddMemeHandler),
     ('/updated_memes', UpdateMemeHandler)
+#    ('/notifier', NotificationHandler)
 ], debug=True)

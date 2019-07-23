@@ -2,9 +2,21 @@ input[type="radio"]:checked+label {
   background-color: cornflowerblue;
 }
 
+#new_meme_form input[type="radio"] {
+  visibility: hidden;
+  display: inline-block;
+}
+
 label {
-    display: block;
+    display: inline-block;
     padding: 5px;
+}
+
+#new_meme_preview {
+  /* position: fixed; */
+  border: 1px solid red;
+  background-color: white;
+  flex-grow: 1;
 }
 
 .meme-div{
@@ -12,6 +24,11 @@ width: 450px;
 text-align: center;
 position: relative;
 }
+
+.meme-div img{
+max-width: 100%;
+}
+
 
 .meme-div h2 {
   position: absolute;
@@ -28,4 +45,28 @@ position: relative;
  }
 .line2 {
    bottom: 0;
+}
+
+#horizontal_container {
+  display: flex;
+  flex-direction: row-reverse;
+  height: 100%
+}
+
+#vertical_container {
+  display: flex;
+  flex-direction: column-reverse;
+  flex-grow: 1;
+}
+
+#template_chooser {
+  min-width: 100px;
+  max-width: 33%;
+}
+
+#template_chooser img{
+  max-width: 100%;
+}
+
+#meme_text_inputs {
 }

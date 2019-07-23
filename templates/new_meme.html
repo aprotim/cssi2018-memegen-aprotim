@@ -1,17 +1,47 @@
 <html>
   <head>
     <title>New Meme</title>
-   <link rel="stylesheet" type="text/css" href="/style/fortune-style.css">
+   <link rel="stylesheet" type="text/css" href="/style/meme-style.css">
   </head>
   <body>
-    <form action="/add_meme" method="POST">
-    <h2>Template:</h2>
-    {% for template in templates %}
-    <input type="radio" name="template" value="{{template.name}}" id="{{template.name}}"/><label for=""{{template.name}}"><img src="meme_templates/{{template.image_file}}" /></label><br />
-    {% endfor %}
-    <h2>Top text:</h2> <input type="text" name="top_text" />
-    <h2>Bottom text:</h2> <input type="text" name="bottom_text" />
-    <input type="submit" />
+    <form id="new_meme_form" action="/add_meme" method="POST">
+    <div id="horizontal_container">
+      <div id="template_chooser">
+        <h2>Image:</h2>
+        {% for template in templates %}
+        <input type="radio" name="template" value="{{template.name}}" id="{{template.name}}"/><label for="{{template.name}}"><img src="meme_images/{{template.image_file}}" /></label><br />
+        {% endfor %}
+      </div>
+      <div id="vertical_container">
+        <div id="meme_text_inputs">
+          <strong>Top text:</strong> <input type="text" name="top_text" id="top_text_input" /> <br />
+          <strong>Bottom text:</strong> <input type="text" name="bottom_text" id="bottom_text_input"/><br />
+          <input type="submit" />
+        </div>
+        <div id="new_meme_preview">
+          <h2>Preview</h2>
+          <div class="meme-div">
+            <img src="" />
+            <h2 class="line1"></h2>
+            <h2 class="line2"></h2>
+          </div>
+        </div>
+      </div>
+    </div>
   </form>
+
+  <script>
+  let update_preview = () => {
+    let top_line = document.querySelector('#new_meme_preview .line1');
+    let bottom_line = document.querySelector('#new_meme_preview .line2')
+    let image = document.querySelector('#new_meme_preview img');
+    top_line.innerHTML = document.querySelector("#top_text_input").value;
+    bottom_line.innerHTML = document.querySelector("#bottom_text_input").value;
+    image.src = document.querySelector('input[name="template"]:checked+label img').src
+  };
+
+  document.querySelectorAll("#new_meme_form input").forEach(
+    (el) => {el.addEventListener("change", update_preview)});
+  </script>
   </body>
 </html>

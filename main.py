@@ -66,7 +66,7 @@ class AddMemeHandler(webapp2.RequestHandler):
         self.redirect('/view?meme_key=' + meme_key.urlsafe())
 
 # JSON endpoint for auto-refresh
-class UpdateMemeHandler(webapp2.RequestHandler):
+class RefreshMemesHandler(webapp2.RequestHandler):
     def get(self):
         self.response.content_type = 'text/json'
         if self.request.get('after'):
@@ -98,6 +98,6 @@ app = webapp2.WSGIApplication([
     ('/', MemeBrowser),
     ('/seed-data', LoadDataHandler),
     ('/add_meme', AddMemeHandler),
-    ('/updated_memes', UpdateMemeHandler),
+    ('/updated_memes', RefreshMemesHandler),
     ('/view', ViewMemeHandler),
 ], debug=True)

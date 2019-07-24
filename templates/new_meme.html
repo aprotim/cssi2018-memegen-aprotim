@@ -9,15 +9,25 @@
       <div id="image_chooser">
         <h2>Image:</h2>
         {% for image in images %}
-        <input type="radio" name="image" value="{{image.name}}" id="{{image.name}}"/><label for="{{image.name}}"><img src="meme_images/{{image.image_file}}" /></label><br />
+        <input type="radio" name="image" value="{{image.name}}" id="{{image.name}}"
+          {% if image_name == image.name %}
+            checked
+          {% endif %}
+        /><label for="{{image.name}}"><img src="meme_images/{{image.image_file}}" /></label><br />
         {% endfor %}
       </div>
       <div id="vertical_container">
         <div id="meme_text_inputs">
-          <strong>Top text:</strong> <input type="text" name="top_text" id="top_text_input" /> <br />
-          <strong>Middle text:</strong> <input type="text" name="middle_text" id="middle_text_input" /> <br />
-          <strong>Bottom text:</strong> <input type="text" name="bottom_text" id="bottom_text_input"/><br />
+          <strong>Top text:</strong>
+          <input type="text" name="top_text" id="top_text_input" value="{{top_text}}" /> <br />
+          <strong>Middle text:</strong>
+          <input type="text" name="middle_text" id="middle_text_input" value="{{middle_text}}" /> <br />
+          <strong>Bottom text:</strong>
+          <input type="text" name="bottom_text" id="bottom_text_input" value="{{bottom_text}}" /><br />
           <input type="submit" />
+          {% if meme_key %}
+          <input type="hidden" name="meme_key" value="{{meme_key}}" />
+          {% endif %}
         </div>
         <div id="new_meme_preview">
           <h2>Preview</h2>

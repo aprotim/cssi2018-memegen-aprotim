@@ -65,6 +65,35 @@ class AddMemeHandler(webapp2.RequestHandler):
              ).put()
         self.redirect('/view?meme_key=' + meme_key.urlsafe())
 
+
+# Like the Add handler, above, but lets you change an existing memes
+class EditMemeHandler(webapp2.RequestHandler):
+    def get(self):
+        template_vars = {
+            "images": Image.query().fetch(),
+            "meme_key": self.request.get("meme_key")}
+        meme = get_meme_from_key(self.request.get("meme_key"))
+        template_vars["top_text"] = meme.top_text
+        template_vars["middle_text"] = meme.middle_text
+        template_vars["bottom_text"] = meme.bottom_text
+        template_vars["image_name"] = meme.image.get().name
+        add_template=jinja_current_directory.get_template("templates/new_meme.html")
+        self.response.write(add_template.render(template_vars))
+
+
+    def post(self):
+        meme = get_meme_from_key(self.request.get('meme_key'))
+        user = users.get_current_user() # get the current logged in user
+        if meme.creator == user.user_id():
+            meme.top_text = self.request.get('top_text')
+            meme.middle_text = self.request.get('middle_text')
+            meme.bottom_text = self.request.get('bottom_text')
+            meme.put()
+        else:
+            self.response.status = "403 Forbidden"
+            return
+
+
 # JSON endpoint for auto-refresh
 class RefreshMemesHandler(webapp2.RequestHandler):
     def get(self):
@@ -100,4 +129,5 @@ app = webapp2.WSGIApplication([
     ('/add_meme', AddMemeHandler),
     ('/updated_memes', RefreshMemesHandler),
     ('/view', ViewMemeHandler),
+    ('/edit', EditMemeHandler),
 ], debug=True)

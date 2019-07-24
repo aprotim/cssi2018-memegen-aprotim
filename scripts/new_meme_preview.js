@@ -9,5 +9,7 @@ let update_preview = () => {
   image.src = document.querySelector('input[name="image"]:checked+label img').src
 };
 
+update_preview();
+
 document.querySelectorAll("#new_meme_form input").forEach(
   (el) => {el.addEventListener("change", update_preview)});

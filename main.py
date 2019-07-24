@@ -53,16 +53,30 @@ class AddMemeHandler(webapp2.RequestHandler):
         add_template=jinja_current_directory.get_template("templates/new_meme.html")
         self.response.write(add_template.render({'images': images}))
 
+
+# Actually stores the memes to datastore
+class SaveMemeHandler(webapp2.RequestHandler):
     def post(self):
         user = users.get_current_user() # get current logged in user
+        meme_key_string = self.request.get('meme_key')
         image_name = self.request.get('image')
         image_key = Image.query(Image.name == image_name).fetch(1)[0].key # get the key of the correct image by nickname
-        meme_key = Meme(top_text=self.request.get('top_text'),
-             middle_text=self.request.get('middle_text'),
-             bottom_text=self.request.get('bottom_text'),
-             image=image_key,
-             creator=user.user_id(), # grab the user ID from currently logged in user, store with Meme
-             ).put()
+
+        if meme_key_string:
+            meme = get_meme_from_key(meme_key_string)
+            if meme.creator != user.user_id():
+                self.response.status = "403 Forbidden"
+                return
+        else:
+            meme = Meme()
+
+        meme.top_text=self.request.get('top_text')
+        meme.middle_text=self.request.get('middle_text')
+        meme.bottom_text=self.request.get('bottom_text')
+        meme.image=image_key
+        meme.creator=user.user_id() # grab the user ID from currently logged in user, store with Meme
+
+        meme_key = meme.put()
         self.redirect('/view?meme_key=' + meme_key.urlsafe())
 
 
@@ -81,19 +95,6 @@ class EditMemeHandler(webapp2.RequestHandler):
         self.response.write(add_template.render(template_vars))
 
 
-    def post(self):
-        meme = get_meme_from_key(self.request.get('meme_key'))
-        user = users.get_current_user() # get the current logged in user
-        if meme.creator == user.user_id():
-            meme.top_text = self.request.get('top_text')
-            meme.middle_text = self.request.get('middle_text')
-            meme.bottom_text = self.request.get('bottom_text')
-            meme.put()
-        else:
-            self.response.status = "403 Forbidden"
-            return
-
-
 # JSON endpoint for auto-refresh
 class RefreshMemesHandler(webapp2.RequestHandler):
     def get(self):
@@ -101,9 +102,14 @@ class RefreshMemesHandler(webapp2.RequestHandler):
         if self.request.get('after'):
             latest_meme_key = ndb.Key(urlsafe=self.request.get('after'))
             latest_meme = latest_meme_key.get()
-            new_memes = Meme.query(Meme.created_at > latest_meme.created_at).order(-Meme.created_at).fetch()
+            new_meme_query = Meme.query(Meme.created_at > latest_meme.created_at).order(-Meme.created_at)
         else:
-            new_memes = Meme.query().order(-Meme.created_at).fetch(10)
+            new_meme_query = Meme.query().order(-Meme.created_at)
+        user_id = self.request.get('after')
+        if user_id:
+            new_meme_query = new_meme_query.filter(Meme.creator == user_id)
+
+        new_memes = new_meme_query.fetch()
         new_memes_list = []
         for meme in new_memes:
             image = meme.image.get()
@@ -130,4 +136,5 @@ app = webapp2.WSGIApplication([
     ('/updated_memes', RefreshMemesHandler),
     ('/view', ViewMemeHandler),
     ('/edit', EditMemeHandler),
+    ('/save', SaveMemeHandler),
 ], debug=True)

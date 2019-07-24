@@ -6,21 +6,13 @@
   <body>
     <a href="{{logout_link}}">Logout</a>
     <div id="memes_container">
-    {% for meme in memes %}
       <div class="meme-div">
         <img src="meme_images/{{meme.image_filename}}" />
         <h2 class="line1">{{meme.top_text}}</h2>
         <h2 class="line2">{{meme.middle_text}}</h2>
         <h2 class="line3">{{meme.bottom_text}}</h2>
       </div>
-      <a href="/view?meme_key={{meme.key.urlsafe()}}">Link</a>
-    {% endfor %}
+      <a href="/edit?meme_key={{meme.key.urlsafe()}}">Edit Meme</a>
     </div>
-
-  <a href="/add_meme">Add a new Meme</a>
-  <script>
-  let latest_meme_key = "{{latest_meme}}";
-  </script>
-  <script src="/scripts/live_update.js"></script>
   </body>
 </html>

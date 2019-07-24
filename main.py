@@ -11,7 +11,10 @@ from models import Meme, Image
 from google.appengine.api import users
 from google.appengine.ext import ndb
 
-
+def get_meme_from_key(meme_key):
+    meme_key_string = meme_key
+    meme_key = ndb.Key(urlsafe=meme_key_string)
+    return meme_key.get()
 
 #remember, you can get this by searching for jinja2 google app engine
 jinja_current_directory = jinja2.Environment(
@@ -30,9 +33,18 @@ class MemeBrowser(webapp2.RequestHandler):
             latest_meme_key = ""
         for meme in memes:
             meme.image_filename = meme.image.get().image_file
-        start_template=jinja_current_directory.get_template("templates/latestmemes.html")
+        start_template=jinja_current_directory.get_template(
+            "templates/latestmemes.html")
         self.response.write(start_template.render({'memes': memes,
-                'latest_meme': latest_meme_key}))
+            'latest_meme': latest_meme_key}))
+
+class ViewMemeHandler(webapp2.RequestHandler):
+    def get(self):
+        meme = get_meme_from_key(self.request.get('meme_key'))
+        meme.image_filename = meme.image.get().image_file
+        template=jinja_current_directory.get_template("templates/singlememe.html")
+        self.response.write(template.render({'meme': meme}))
+
 
 # Handles new meme creation
 class AddMemeHandler(webapp2.RequestHandler):
@@ -42,15 +54,16 @@ class AddMemeHandler(webapp2.RequestHandler):
         self.response.write(add_template.render({'images': images}))
 
     def post(self):
-        user = users.get_current_user()
+        user = users.get_current_user() # get current logged in user
         image_name = self.request.get('image')
-        image_key = Image.query(Image.name == image_name).fetch(1)[0].key
-        Meme(top_text=self.request.get('top_text'),
+        image_key = Image.query(Image.name == image_name).fetch(1)[0].key # get the key of the correct image by nickname
+        meme_key = Meme(top_text=self.request.get('top_text'),
              middle_text=self.request.get('middle_text'),
              bottom_text=self.request.get('bottom_text'),
              image=image_key,
-             creator=user.user_id()).put()
-        self.redirect('/')
+             creator=user.user_id(), # grab the user ID from currently logged in user, store with Meme
+             ).put()
+        self.redirect('/view?meme_key=' + meme_key.urlsafe())
 
 # JSON endpoint for auto-refresh
 class UpdateMemeHandler(webapp2.RequestHandler):
@@ -85,6 +98,6 @@ app = webapp2.WSGIApplication([
     ('/', MemeBrowser),
     ('/seed-data', LoadDataHandler),
     ('/add_meme', AddMemeHandler),
-    ('/updated_memes', UpdateMemeHandler)
-#    ('/notifier', NotificationHandler)
+    ('/updated_memes', UpdateMemeHandler),
+    ('/view', ViewMemeHandler),
 ], debug=True)

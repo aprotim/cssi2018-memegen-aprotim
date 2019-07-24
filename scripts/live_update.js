@@ -16,7 +16,10 @@ function insert_meme(desc){
     new_element('h2', {'class': 'line2'}, [document.createTextNode(desc['middle_text'])]),
     new_element('h2', {'class': 'line3'}, [document.createTextNode(desc['bottom_text'])]),
   ]);
+  let permalink = new_element('a', {'href': '/viewmeme?meme_key=' + desc['key']},
+    [document.createTextNode('Link')])
   let container = document.querySelector("#memes_container");
+  container.insertBefore(permalink, container.children[0]);
   container.insertBefore(new_div, container.children[0]);
 }
 
